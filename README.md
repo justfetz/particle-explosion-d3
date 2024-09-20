@@ -23,7 +23,7 @@ This project is a simple interactive particle explosion simulation built using *
 
 ## Demo
 You can view a live demo of the simulation on **GitHub Pages** by visiting:
-[https://your-username.github.io/particle-explosion-animation/](https://your-username.github.io/particle-explosion-animation/)
+[https://your-username.github.io/particle-explosion-animation/](https://justfetz.github.io/particle-explosion-d3/)
 
 ## Customization
 You can customize the following aspects of the simulation:
