@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+  .links line {
+    stroke: #999;
+    stroke-opacity: 0.6;
+  }
+
+  .nodes circle {
+    stroke: #fff;
+    stroke-width: 1.5px;
+  }
+
+  text {
+    font: 12px sans-serif;
+    pointer-events: none;
+  }
+</style>
+<body>
+<script src="https://d3js.org/d3.v6.min.js"></script>
+<script>
+
+// Sample data
+const graph = {
+  "nodes": [
+    { "id": "Alice" },
+    { "id": "Bob" },
+    { "id": "Carol" },
+    { "id": "Dave" },
+    { "id": "Eve" },
+    { "id": "Frank" },
+    { "id": "Grace" },
+    { "id": "Heidi" }
+  ],
+  "links": [
+    { "source": "Alice", "target": "Bob" },
+    { "source": "Alice", "target": "Carol" },
+    { "source": "Bob", "target": "Dave" },
+    { "source": "Carol", "target": "Eve" },
+    { "source": "Dave", "target": "Frank" },
+    { "source": "Eve", "target": "Grace" },
+    { "source": "Frank", "target": "Heidi" },
+    { "source": "Grace", "target": "Heidi" }
+  ]
+};
+
+const width = 800;
+const height = 600;
+
+const svg = d3.select("body").append("svg")
+  .attr("width", width)
+  .attr("height", height);
+
+const color = d3.scaleOrdinal(d3.schemeCategory10);
+
+// Initialize the simulation
+const simulation = d3.forceSimulation(graph.nodes)
+  .force("link", d3.forceLink(graph.links).id(d => d.id).distance(100))
+  .force("charge", d3.forceManyBody().strength(-300))
+  .force("center", d3.forceCenter(width / 2, height / 2));
+
+// Add lines for every link in the dataset
+const link = svg.append("g")
+  .attr("class", "links")
+  .selectAll("line")
+  .data(graph.links)
+  .enter().append("line")
+  .attr("stroke-width", 2);
+
+// Add circles for every node in the dataset
+const node = svg.append("g")
+  .attr("class", "nodes")
+  .selectAll("g")
+  .data(graph.nodes)
+  .enter().append("g");
+
+const circles = node.append("circle")
+  .attr("r", 10)
+  .attr("fill", d => color(d.id))
+  .call(drag(simulation));
+
+// Add labels to the nodes
+const labels = node.append("text")
+  .text(d => d.id)
+  .attr('x', 15)
+  .attr('y', 5);
+
+// Update positions on each tick
+simulation.on("tick", () => {
+  link
+    .attr("x1", d => d.source.x)
+    .attr("y1", d => d.source.y)
+    .attr("x2", d => d.target.x)
+    .attr("y2", d => d.target.y);
+
+  node
+    .attr("transform", d => `translate(${d.x},${d.y})`);
+});
+
+// Drag functions
+function drag(simulation) {
+  function dragstarted(event, d) {
+    if (!event.active) simulation.alphaTarget(0.3).restart();
+    d.fx = d.x;
+    d.fy = d.y;
+  }
+    
+  function dragged(event, d) {
+    d.fx = event.x;
+    d.fy = event.y;
+  }
+    
+  function dragended(event, d) {
+    if (!event.active) simulation.alphaTarget(0);
+    d.fx = null;
+    d.fy = null;
+  }
+    
+  return d3.drag()
+    .on("start", dragstarted)
+    .on("drag", dragged)
+    .on("end", dragended);
+}
+
+</script>
+</body>
