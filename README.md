@@ -33,4 +33,4 @@ You can customize the following aspects of the simulation:
 - **Max Particles**: Adjust the `maxParticles` constant to limit the total number of particles on the screen.
 
 ## License
-This project is licensed under the MIT License. Feel free to use and modify the code.
+This project is me tinkering :)
